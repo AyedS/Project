@@ -1,0 +1,131 @@
+html {
+  color: black;
+  font-family: "Verdana", cursive, sans-serif;
+}
+
+body{
+  background-image:url('../images/arriere-plan.jpg');
+  background-repeat:repeat;
+  background-position:right top;
+}
+
+h1{
+  font-size: 3em;
+}
+
+div{
+  text-align: center;
+}
+
+table{
+  margin:auto;
+  border-width: 5px;
+  border-style: none;
+  border-color: #DA70D6;
+  border-collapse: collapse;
+}
+
+td{
+  border: 3px solid #DDA0DD;
+  margin:0;
+}
+
+th{
+  border:3px solid #DDA0DD;
+}
+
+#menu-deroulant /* texte centré */
+{
+display: inline-block;
+text-align: center;
+width: 100%;
+padding-top: -10em;
+margin:0;
+margin-left: -40px;
+}
+
+#menu-deroulant, #menu-deroulant ul /*annulation du style par défaut des listes */
+{
+list-style: none;
+}
+
+#menu-deroulant>li
+{
+display: inline-block;
+}
+
+#menu-deroulant li  /*couleur neutre du menu*/
+{
+background-color: #DDA0DD
+}
+
+#menu-deroulant li:hover  /* couleur lorsque la souris passe sur le menu*/
+{
+background-color: #DA70D6;
+}
+
+#menu-deroulant li:hover ul li:hover /* idem pour le sous-menu une fois déroulé*/
+{
+background-color: #DA70D6;
+text-align: center;
+}
+
+#menu-deroulant a  /*position et style des liens du menu*/
+{
+text-decoration: none;
+display: block;
+width: 7em;
+color:black;
+height:2em;
+padding-top:1em;
+text-align: center;
+}
+
+#menu-deroulant ul
+{
+position: absolute;
+margin-left: -40px;
+visibility:hidden;
+}
+
+#menu-deroulant li:hover ul
+{
+visibility: visible;
+}
+
+#entete{
+  width: auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+#logo /* position de l'image du site  */
+{
+display:block;
+margin-right:auto;
+width: 80px;
+}
+
+h1{
+  background-color: #DDA0DD;
+  width:100%;
+  text-align: center;
+}
+#image1, #image4{
+  display: flex;
+  justify-content: flex-start;
+margin-left: auto;
+}
+
+#image2, #image3{
+  display: flex;
+  justify-content: flex-start;
+  margin-right: auto;
+  margin-top: 0;
+}
+
+.para{
+  font-style: italic;
+}
