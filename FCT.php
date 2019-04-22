@@ -1,6 +1,6 @@
 <?php
 function getBD(){
-    $bdd=new PDO('mysql:host=127.0.0.1;dbname=adopt_your_job;charset=utf8','root','root');
+    $bdd=new PDO('mysql:host=localhost:8889;dbname=adopt_your_job;charset=utf8','root','root');
     return $bdd;
 }
 
@@ -28,7 +28,7 @@ function topnav(){
         <div class="rec"><a href="../recherche/recherche.php">Recherche</a></div>
         <div class="acc"><a href="../index/index.php">Accueil</a></div>
         <div class="logo"><img src="../images/logo1.png"></div>
-        <div class="titre">Adopt your job</div>
+        <div class="titre">Adopt your job</div>  
         </div> ';
     }
     else{
@@ -39,7 +39,7 @@ function topnav(){
         <div class="rec"><a href="../recherche/recherche.php">Recherche</a></div>
         <div class="acc"><a href="../index/index.php">Accueil</a></div>
         <div class="logo"><img src="../images/logo1.png"></div>
-        <div class="titre">Adopt your job</div>
+        <div class="titre">Adopt your job</div>  
         </div> ';
     }
 }
@@ -128,12 +128,12 @@ function inscription($nom,$prenom,$tel,$age,$mail,$mdp){
 
     $bdd = getBD();
     try {
-        $req = "INSERT INTO utilisateur(nom,prenom,tel,age,mdp,mail)
+        $req = "INSERT INTO utilisateur(nom,prenom,tel,age,mdp,mail) 
             VALUES('".$nom."','".$prenom."','".$tel."','".$age."','".$mdp."','".$mail."')";
         $bdd->exec($req);
         echo "Inscription validée, redirection en cours";
         echo "<meta http-equiv='refresh' content='0;url=../index/index.php'/>";
-    }
+    } 
     catch (Exception $e) {
         echo 'Exception reçue : ', $e->getMessage(), "\n";
     }
@@ -153,43 +153,13 @@ function envoi2_envoi($prenom,$nom,$email, $message){
 }
 /* ---- Fin Contact ---- */
 /* ---- Commentaire ---- */
-function envoiComm($com,$ID,$prenom,$domaine,$nom){
+function envoiComm($com,$ID,$prenom,$domaine,$nom){// nom -> id de l'établissement/master/ville
     $date=date("Y-m-d H:i:s");
     $date="2019-04-08 12:24:03";
     $bd=getBD();
     try{
-    $r='insert into commentaire(comm,'.$domaine.',id_user,prenom,date_com) VALUES("'.addslashes($com).'","'.$nom.'",'.$ID.',"'.$prenom.'","'.$date.'")';
-    $r='insert into commentaire(comm,'.$domaine.',id_user,prenom,date_com) VALUES("'.addslashes($com).'","'.$nom.'",'.$ID.',"'.$prenom.'","'.$date.'")';
-
-    //$r='select * from commentaire';
-    //$r='INSERT INTO commentaire(comm,ville,id_user,prenom,) VALUES("hg","montpellier",3,"Axel-Bryan","2019-04-08 12:24:03")';
-    echo $r;
-    //$r="INSERT INTO commentaire(comm,".$domaine.",id_user,prenom,date) VALUES('".addslashes($com)."','".$nom."',".$ID.",'".$prenom."','".$date."')";
+    $r='insert into commentaire(comm,'.$domaine.',id_user,prenom,date_com) VALUES("'.addslashes($com).'",'.$nom.','.$ID.',"'.$prenom.'","'.$date.'")';
     $req=$bd -> query($r);
-    //$t = $req->fetch();
-    echo  $req;
-    //$req=$bd -> query("INSERT INTO commentaire(comm,".$domaine.",id_user,prenom,date) VALUES('".addslashes($com)."','".$nom."',".$ID.",'".$prenom."','".$date."')");
-    //return $req;
-    /*
-    if($domaine=='master'){
-        $req=$bd->prepare('INSERT INTO commentaire(comm,master,id_user,prenom,date) VALUES(:com,:nom,:id,:prenom,:date)');
-    }
-    if($domaine=='ville'){
-        $req=$bd->prepare('INSERT INTO commentaire(comm,ville,id_user,prenom,date) VALUES(:com,:nom,:id,:prenom,:date)');
-    }
-    if($domaine=='etablissement'){
-        $req=$bd->prepare('INSERT INTO commentaire(comm,etablissement,id_user,prenom,date) VALUES(:com,:nom,:id,:prenom,:date)');
-    }
-
-    $req=$bd->prepare('INSERT INTO commentaire(comm,'.$domaine.',id_user,prenom,date) VALUES(:com,:nom,:id,:prenom,:date)');
-
-    $req->execute(array(
-        'com'=>addslashes($com),
-        'nom'=>$nom,
-        'id'=>$ID,
-        'prenom'=>$prenom,
-        'date'=>$date
-    ));*/
     }
     catch(exception $e){
         echo 'Exception reçue: ', $e ->getMessage(), "\n";
@@ -198,33 +168,21 @@ function envoiComm($com,$ID,$prenom,$domaine,$nom){
 
 function lireComs($domaine,$nom){
     $bd=getBD();
-    $req=$bd ->query('SELECT id_user,comm,prenom FROM commentaire where '.$domaine.'="'.$nom.'" ORDER BY date ASC');
+    $req=$bd ->query('SELECT id_user,comm,prenom FROM commentaire where '.$domaine.'="'.$nom.'" ORDER BY id DESC');
     while($com=$req ->fetch()){
         echo '<div class="container">';
-        if(isset($_SESSION['client'])){
-            if($com['id_user']==$_SESSION['client']['ID']){
-                echo '<div class="row">';
-                    echo '<div class="col-lg-9">';
-                        echo '<p class="comMe">'.$com['comm'].' </p>';
-                    echo '</div>';
-                    echo '<div class="col-lg-3">';
-                        echo '<p class="userMe">: '.$com['prenom'].'<br></p>';
-                    echo '</div>';
-                echo'</div>';
+            echo '<p class="userMe"> '.$com['prenom'].' :<br></p>';
 
-            }
-        }
-        else{
-            echo '<div class="row">';
-                echo '<div class="col-lg-9">';
-                    echo '<p class="comMe">'.$com['comm'].' </p>';
-                echo '</div>';
-                echo '<div class="col-lg-3">';
-                    echo '<p class="userMe">: '.$com['prenom'].'<br></p>';
-                echo '</div>';
-            echo'</div>';
+                echo '<div class="dialogbox">';
+                    echo '<div class="bod">';
+                        echo '<span class="tip tip-up"></span>';
+                            echo '<p class="message">'.$com['comm'].' </p>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
 
-        }
+    
+        
     }
     echo '</div>';
 }
@@ -241,7 +199,7 @@ function getListe_sujet($domaine,$reg){
     if($domaine=='master'){
         echo'<h4>Masters:</h4><br>';
         $req1=$bd->query('SELECT code FROM departements WHERE region_code='.$reg);
-        echo '<select name="master" id="master">';
+        echo '<select name="idMaster" id="master">';
         while($region=$req1->fetch()){
             $req2=$bd ->query('SELECT DISTINCT slug FROM villes WHERE department_code='.$region['code']);
             while($ville=$req2->fetch()){
@@ -260,7 +218,7 @@ function getListe_sujet($domaine,$reg){
 
     if($domaine=='ville'){
         echo'<h4>Villes:</h4><br>';
-        echo '<select name="ville" id="ville">';
+        echo '<select name="idVille" id="ville">';
             $req2=$bd ->query('SELECT DISTINCT commune FROM etablissements WHERE région_COG='.$reg.' ORDER BY commune ASC');
             while($ville=$req2->fetch()){
                 $req3=$bd->query('SELECT id,name FROM `villes` where name="'.$ville['commune'].'" ');
@@ -268,28 +226,28 @@ function getListe_sujet($domaine,$reg){
                 echo '<OPTION value='.$result['id'].'>';
                 echo $result['name'];
                 echo '</OPTION>';
-
+             
             }
-
+        
         echo '</select>';
     }
     if($domaine=='etablissement'){
         echo'<h4>Etablissements:</h4><br>';
-        echo '<select name="etablissement" id="etablissement">';
-
+        echo '<select name="idEtab" id="etablissement">';
+            
             $req2=$bd ->query('SELECT DISTINCT nom,id FROM etablissements WHERE région_COG='.$reg.' ORDER BY nom ASC');
             while($etab=$req2->fetch()){
-
+               
                 echo '<OPTION value='.$etab['id'].'>';
                 echo $etab['nom'];
                 echo '</OPTION>';
-
+            
             }
-
+        
         echo '</select>';
     }
-    echo '<input type="hidden" value="SSS">
-    <input type="submit" value="VA CHERCHER LES INFOS"></form>';
+    echo '<input type="hidden" value="SSS"> <br><br>    
+    <input type="submit" class="button1" name="Envoyer" value="VA CHERCHER LES INFOS"></form>';
 }
 /* - fin page région - */
 
@@ -321,154 +279,198 @@ function getVilles($id,$domaine){
     if($domaine=='reg'){
 
         $req=$bd->query('select distinct commune from etablissements where région_COG='.$id.' ORDER BY commune ASC');
-
+        echo 'Selectionnez une ville: <br>';
+        echo '<select name="idVille">';
         while($req2=$req->fetch()){
             $req3=$bd->query('SELECT id from villes where name="'.$req2['commune'].'"');
             $id=$req3->fetch();
             echo '<OPTION  value='.$id['id'].'>';
                 echo $req2['commune'];
             echo '</OPTION>';
-
         }
+        echo '</select>';  
+        echo '<input type=submit name="Envoyer" value=GO /> </form>';
     }
     if($domaine=='dpt'){
         $dpt=$bd->query('SELECT name FROM departements WHERE code='.$id);
         $dep=$dpt->fetch();
         $req=$bd->query('select distinct commune from etablissements where département="'.$dep["name"].'"');
+        echo 'Selectionnez une ville: <br>';
+        echo '<select name="idVille">';
         while($req2=$req->fetch()){
-            $req3=$bd->query('SELECT id from villes where name="'.$req2['commune'].'"');
+                $req3=$bd->query('SELECT id from villes where name="'.$req2['commune'].'"');
             $id=$req3->fetch();
             echo '<OPTION  value='.$id['id'].'>';
                 echo $req2['commune'];
             echo '</OPTION>';
-
         }
+        echo '</select>';  
+        echo '<input type=submit name="Envoyer" value=GO /> </form>';
     }
 }
 
 function getEtab($id,$domaine){
     $bd=getBD();
-    if($domaine=='reg'){
-        $req=$bd->query('select nom, université, id from etablissements where région_COG='.$id.'order by nom ASC');
-        while($req2=$req->fetch()){
-            echo '<OPTION  value='.$req2['id'].'>';
-                echo $req2['nom'].$req2['université'];
-            echo '</OPTION>';
+    if($domaine=="reg"){
+        $req=$bd->query('SELECT id,nom,commune FROM etablissements WHERE région_COG='.$id);
+        $nbr=$req->rowcount();
+        if($nbr==0){
+            echo "Pas d'établissements dans ce département! </form>";
+        }
+        else{
+            echo 'Selectionnez un établissement: <br>';
+            echo '<select name="idEtab">';
+            while($etab=$req->fetch()){
+                echo '<OPTION  value='.$etab['id'].'>';
+                    echo $etab['nom'].', '.$etab['commune'];
+                echo '</OPTION>';
+            }
+            echo '</select>';  
+            echo '<input type=submit name="Envoyer" value=GO /> </form>';
         }
     }
-    if($domaine=='dpt'){
-        $dpt=$bd->query('select distinct nom, université, etablissements.id FROM etablissements, departements
-          WHERE etablissements.région_COG='.$id.'
-          and'.$id.'=departements.region_code');
-        while($dep=$dpt->fetch()){
-            echo '<OPTION  value='.$dep['id'].'>';
-                echo $dep['université'].$dep['nom'];
-            echo '</OPTION>';
+    if($domaine=="dpt"){
+        $req=$bd->query('SELECT id,nom,commune FROM etablissements WHERE substr(commune_COG,1,2)='.$id); // retrouver villes avec etablissements table masters
+        $nbr=$req->rowcount();
+        if($nbr==0){
+            echo "Pas d'établissements dans ce département! </form>";
         }
+        else{
+            echo 'Selectionnez un établissement: <br>';
+            echo '<select name="idEtab">';
+            while($etab=$req->fetch()){
+                echo '<OPTION  value='.$etab['id'].'>';
+                    echo $etab['nom'].', '.$etab['commune'];
+                echo '</OPTION>';
+            }
+            echo '</select>';  
+            echo '<input type=submit name="Envoyer" value=GO /> </form>';
+        }
+  
     }
 }
-
 function getMasters($id,$domaine){
-// fait par axel
-}
-
-  function getInfosVille($id){
-      if($domaine="villes"){
-        $bd=getBD();
-        $req=$bd->query('select distinct name from villes where id='.$id.'');
-        $a=$req->fetch();
-        $req2=$bd->query('select department_code from villes where id='.$id.'');
-        $b=$req2->fetch();
-        $req3=$bd->query('select code from departements where code='.$b['department_code'].'');
-        $c=$req3->fetch();
-        $req4=$bd->query('select region_code from departements where code='.$c['code'].'');
-        $d=$req4->fetch();
-        $req5=$bd->query('select region_code from regions where region_code='.$d['region_code'].'');
-
-        echo '<h1> '.$a['name'].' </h1>';
-
-        echo '<div>';
-        echo '<h3> Loyers </h3>';
-        $req6=$bd->query('select moyenne_loyer_mensuel, surface_moyenne, nombre_logements from loyers where agglomeration like "%'.$a['name'].'%"');
-        echo '<p> Prix des loyers: </p>';
-        while($loyer=$req6->fetch()){
-          echo $loyer['moyenne_loyer_mensuel'];
-          echo '</br>';
-          echo $loyer['surface_moyenne'];
-          echo '</br>';
-          echo $loyer['nombre_logements'];
-          echo '</br>';
+    $bd=getBD();
+    if($domaine=="dpt"){
+        $liste=[];
+        $dpt=$bd->query('SELECT name FROM departements WHERE code='.$id);
+        $dep=$dpt->fetch();
+        $req=$bd->query('select distinct commune from etablissements where département="'.$dep["name"].'"');
+        while($req2=$req->fetch()){
+        $mast=$bd->query('SELECT Domaine,Discipline,id FROM masters WHERE etablissement LIKE "%'.$req2['commune'].'%"');
+            while($req3=$mast->fetch()){
+                $sujet=[$req3['id'],$req3['Discipline'],$req3['Domaine']];
+                array_push($liste,$sujet);
+            }
         }
-        echo '</div>';
-
-        echo '<div>';
-        echo '<h3> Masters </h3>';
-        $req7=$bd->query('select diplome, etablissement, domaine from masters where etablissement like "%'.$a['name'].'%"');
-        echo '<p> Masters présents dans la ville: </p>';
-        while($masters=$req7->fetch()){
-          echo '</br>';
-          echo $masters['diplome'];
-          echo '</br>';
-          echo $masters['etablissement'];
-          echo '</br>';
-          echo $masters['domaine'];
-          echo '</br>';
+        if(empty($liste)){ 
+            echo 'Pas de Masters dans ce département!';
         }
-        echo '</div>';
-
-        echo '<div>';
-        echo '<h3> Cinémas </h3>';
-        $req8=$bd->query('select NOM_ETABLISSEMENT from cinemas where COMMUNE="'.$a['name'].'"');
-        echo '<p> Nom des cinémas : </p>';
-        while($cine=$req8->fetch()){
-            echo $cine['NOM_ETABLISSEMENT'];
-            echo '</br>';
+        else{
+            echo 'Selectionnez un Master: <br> ';
+            echo '<select name="idMaster">';
+            foreach($liste as $mast){
+                echo '<OPTION  value='.$mast[0].'>';
+                echo $mast[2].', '.$mast[1];
+                echo '</OPTION>';
+            }
+            echo '</select>';  
+            echo '<input type=submit name="Envoyer" value=GO /> </form>';
         }
-        echo '</div>';
-
-        echo '<div>';
-        echo '<h3> Musées </h3>';
-        $req9=$bd->query('select NOM_DU_MUSEE, ADR, TELEPHONE1, SITWEB from musees where VILLE="'.$a['name'].'"');
-        echo '</br> <p> Musées de la ville: </p>';
-        while($musees=$req9->fetch()){
-          echo $musees['NOM_DU_MUSEE'];
-          echo '</br>';
-          echo $musees['ADR'];
-          echo '</br>';
-          echo $musees['TELEPHONE1'];
-          echo '</br>';
-          echo $musees['SITWEB'];
-          echo '</br>';
+    }
+    if($domaine=="reg"){
+        $dpt=$bd->query('SELECT name FROM departements WHERE code='.$id);
+        $nbr=$dpt->rowcount();
+        if($nbr==0){
+            echo "Pas de master dans cette région! </form>";
         }
-        echo '</div>';
-
-        echo '<div>';
-        echo '<h3> Passagers </h3>';
-        $req10=$bd->query('select Nombre_moyen_de_trajets_quotidiens_en_2017, Nombre_de_passagers_en_2017_en_milliers, Nature_de_la_liaison from nb_passagers where Liaisons like "%'.$a['name'].'%"');
-        echo '<p> Nombre de passagers dans la ville : </p>';
-        while($nbpassager=$req10->fetch()){
-          echo $nbpassager['Nombre_moyen_de_trajets_quotidiens_en_2017'];
-          echo '</br>';
-          echo $nbpassager['Nombre_de_passagers_en_2017_en_milliers'];
-          echo '</br>';
-          echo $nbpassager['Nature_de_la_liaison'];
-          echo '</br>';
+        else{
+            echo 'Selectionnez un Master: <br> ';
+            echo '<select name="idMaster">';
+            $req=$bd->query('select distinct commune from etablissements where région_COG="'.$id.'"');
+            while($req2=$req->fetch()){
+            $mast=$bd->query('SELECT Domaine,Discipline,id FROM masters WHERE etablissement LIKE "%'.$req2['commune'].'%"');
+                while($req3=$mast->fetch()){
+                echo '<OPTION  value='.$req3['id'].'>';
+                echo $req3['Domaine'].', '.$req3['Discipline'];
+                echo '</OPTION>';
+                }
+            }
+            echo '</select>';  
+            echo '<input type=submit name="Envoyer" value=GO /> </form>';
         }
-        echo '</div>';
-
-        echo '<div>';
-        echo '<h3> Liaisons </h3>';
-        $req11=$bd->query('select Nom_de_la_liaison, Type_de_concurrence_SLO_et_ from liaison where Nom_de_la_liaison like "%'.$a['name'].'%"');
-        echo '<p> Type de concurrence entre régions : </p>';
-        while($liaison=$req11->fetch()){
-          echo $liaison['Nom_de_la_liaison'];
-          echo '</br>';
-          echo $liaison['Type_de_concurrence_SLO_et_'];
-          echo '</br>';
-        }
-        echo '</div>';
     }
 }
+
+function fullMessage(){//simule un envoi de message pour chaque retour possible
+    $bd=getBD();
+    $a=0;
+    $b=0;
+    $c=0;
+    // pour les communes:
+    $req=$bd->query('SELECT DISTINCT commune from etablissements');
+    while($ville=$req->fetch()){
+        $commune=$bd->query('SELECT id FROM villes WHERE name="'.$ville['commune'].'"');
+        $comu=$commune->fetch();
+        $com='Génial '.$ville['commune'].' !';
+        envoiComm($com,3,'Axel-Bryan','ville',$comu['id']);
+        $a++;
+    }
+    echo 'Ville :'.$a.' ok!';
+    //pours les masters:
+    $req2=$bd->query('SELECT id,Domaine,Discipline from masters');
+    while($master=$req2->fetch()){
+        $com='Génial '.$master['Domaine'].' '.$master['Discipline'].' !';
+        envoiComm($com,3,'Axel-Bryan','master',$master['id']);
+        $b++;
+    }
+    echo 'Master :'.$b.' ok!';
+    //pours les etablissements:
+    $req3=$bd->query('SELECT id,nom from etablissements');
+    while($etab=$req3->fetch()){
+        $com='Génial '.$etab['nom'].' !';
+        envoiComm($com,3,'Axel-Bryan','etablissement',$etab['id']);
+        $c++;
+    }
+    echo 'etablissements :'.$c.' ok!';
+}
+
+function etab($id){
+    $i=0;
+    $bd=getBD();
+    $req=$bd->query('SELECT * FROM etablissements where id='.$id);
+    $etab=$req->fetch();
+    if(isset($etab['université'])){
+        echo '<p> Université: '.$etab['université'].'</p>';
+    }
+    echo "<p> Nom : ".$etab['nom']."</p>";
+    echo "<p> Type d'établissement : ".$etab['type_détablissement']."</p>";
+    echo "<p> Statut : ".$etab['statut']."</p>";
+    echo "<p> Adresse : ".$etab['commune_COG']." ".$etab['commune']." , ".$etab['adresse']." ".$etab['cedex']."</p>";
+    echo "<p> Téléphone : ".$etab['téléphone']."</p>";
+    echo "<p> Académie : ".$etab['académie']."</p>";
+    echo "<p> <a href=http://".$etab['onisep']." rel='nofollow' target='_blank'> Rubrique ONISEP </a></p>";
+}
+
+function Masters($id){
+    $bd=getBD();
+    $req=$bd->query('SELECT * FROM Masters where id='.$id);
+     $masters=$req->fetch();
+     if(isset($masters['Remarque'])){
+         echo '<p> Remarque: '.$masters['Remarque'].'</p>';
+     }
+     echo "<p> Academie:".$masters['Academie']."</p>";
+     echo "<p> Domaine: ".$masters['Domaine']."</p>";
+     echo "<p> Discipline: ".$masters['Discipline']."</p>";
+     echo "<p> Taux_d’insertion:".$masters["Taux_d’insertion"]."</p>";
+     echo "<p> emplois_stables:".$masters["_emplois_stables"]."</p>";
+     echo "<p> emplois_a_temps_plein:".$masters["_emplois_a_temps_plein"]."</p>";
+     echo "<p> emplois_exterieurs_a_la_region_de_l’universite: ".$masters["_emplois_exterieurs_a_la_region_de_l’universite"]."</p>";
+     echo "<p> Salaire_net_median_des_emplois_a_temps_plein:".$masters["Salaire_net_median_des_emplois_a_temps_plein"]."</p>";
+     echo "<p> Taux_de_reponse:".$masters["Taux_de_reponse"]."</p>";
+    }
+
+
 /* - fin page recherche - */
 
 /* ---- fin infos ---- */
